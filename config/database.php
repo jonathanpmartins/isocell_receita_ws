@@ -56,11 +56,11 @@ return [
 
         'isocell' => [
             'driver' => 'mysql',
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => 'isocell',
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'host' => env('DB_HOST_ISOCELL', '127.0.0.1'),
+            'port' => env('DB_PORT_ISOCELL', '3306'),
+            'database' => env('DB_DATABASE_ISOCELL', 'forge'),
+            'username' => env('DB_USERNAME_ISOCELL', 'forge'),
+            'password' => env('DB_PASSWORD_ISOCELL', ''),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
