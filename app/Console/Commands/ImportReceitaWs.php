@@ -70,7 +70,7 @@ class ImportReceitaWs extends Command
             if ($counter > 0) {
 
                 $sleeped = 0;
-                while ($sleeped < 10) {
+                while ($sleeped < 15) {
                     sleep(1);
                     $sleeped++;
                     echo 'Sleeping...'.$sleeped.PHP_EOL;
@@ -102,14 +102,14 @@ class ImportReceitaWs extends Command
 
     }
 
-    public function getData($cnpj)
+    public function getData($cnpj, $key)
     {
         echo 'CNPJ: '.$cnpj.PHP_EOL;
         try {
             $data = json_decode(file_get_contents('https://www.receitaws.com.br/v1/cnpj/' . $cnpj), true);
         } catch (Exception $exception) {
-            //Cache::increment($key);
-            //dd($exception->getMessage());
+            Cache::increment($key);
+            dd($exception->getMessage());
             return false;
         }
 
