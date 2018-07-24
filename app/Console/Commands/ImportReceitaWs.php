@@ -86,6 +86,7 @@ class ImportReceitaWs extends Command
                 }
                 $error++;
                 echo 'COTINUE 2 (EXCEPTION)'.PHP_EOL;
+                Cache::increment($key);
                 continue;
             }
 
@@ -100,14 +101,14 @@ class ImportReceitaWs extends Command
 
     }
 
-    public function getData($cnpj, $key)
+    public function getData($cnpj)
     {
         echo 'CNPJ: '.$cnpj.PHP_EOL;
         try {
             $data = json_decode(file_get_contents('https://www.receitaws.com.br/v1/cnpj/' . $cnpj), true);
         } catch (Exception $exception) {
-            Cache::increment($key);
-            dd($exception->getMessage());
+            //Cache::increment($key);
+            //dd($exception->getMessage());
             return false;
         }
 
