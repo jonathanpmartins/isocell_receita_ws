@@ -52,6 +52,7 @@ class ImportReceitaWs extends Command
 
             if (!isset($entity->cnpj)) {
                 echo 'BREAK 2 (ISSET)'.PHP_EOL;
+                Cache::increment($key);
                 break;
             }
 
