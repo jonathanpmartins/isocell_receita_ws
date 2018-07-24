@@ -70,7 +70,7 @@ class ImportReceitaWs extends Command
             if ($counter > 0) {
 
                 $sleeped = 0;
-                while ($sleeped < 15) {
+                while ($sleeped < 20) {
                     sleep(1);
                     $sleeped++;
                     echo 'Sleeping...'.$sleeped.PHP_EOL;
