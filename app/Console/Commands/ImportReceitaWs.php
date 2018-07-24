@@ -53,7 +53,13 @@ class ImportReceitaWs extends Command
             }
 
             if ($counter > 0) {
-                sleep(10);
+
+                $sleeped = 0;
+                while ($sleeped < 10) {
+                    sleep(1);
+                    $sleeped++;
+                    echo 'Sleeping...'.$sleeped.PHP_EOL;
+                }
             }
 
             $data = $this->getData($entity->cnpj);
