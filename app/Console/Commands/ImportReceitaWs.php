@@ -69,7 +69,7 @@ class ImportReceitaWs extends Command
 
             Record::create($data);
 
-            echo 'INSERTED'.PHP_EOL;
+            echo 'INSERTED, last_id: '.$lastId.PHP_EOL;
 
             $counter++;
 
