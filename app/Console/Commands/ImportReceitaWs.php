@@ -20,6 +20,8 @@ class ImportReceitaWs extends Command
 
     public function handle()
     {
+        echo 'INIT'.PHP_EOL;
+
         $key = 'receita-ws:last-id';
 
         $counter = 0;
@@ -27,12 +29,18 @@ class ImportReceitaWs extends Command
 
         while ($counter < 3) {
 
+            echo 'WHILE'.PHP_EOL;
+
             if (Cache::has($key)) {
+                echo 'has cache'.PHP_EOL;
                 $lastId = Cache::get($key);
             } else {
                 $lastId = 0;
+                echo 'dont has cache'.PHP_EOL;
                 Cache::forever($key, $lastId);
             }
+
+            echo '0'.PHP_EOL;
 
             $entity = DB::connection('isocell')->table('clients')->where('id', '>', $lastId)->first();
             if (!$entity) {
@@ -40,10 +48,14 @@ class ImportReceitaWs extends Command
                 break;
             }
 
+            echo '1'.PHP_EOL;
+
             if (!isset($entity->cnpj)) {
                 echo 'BREAK 2 (ISSET)'.PHP_EOL;
                 break;
             }
+
+            echo '2'.PHP_EOL;
 
             $record = Record::where('cnpj', $entity->cnpj)->first();
             if ($record) {
@@ -51,6 +63,8 @@ class ImportReceitaWs extends Command
                 Cache::increment($key);
                 continue;
             }
+
+            echo '3'.PHP_EOL;
 
             if ($counter > 0) {
 
@@ -62,7 +76,9 @@ class ImportReceitaWs extends Command
                 }
             }
 
-            $data = $this->getData($entity->cnpj);
+            echo '4'.PHP_EOL;
+
+            $data = $this->getData($entity->cnpj, $key);
             if (!$data) {
                 if ($error > 10) {
                     echo 'BREAK 3 (ERRORS TIMEOUT)'.PHP_EOL;
@@ -84,11 +100,13 @@ class ImportReceitaWs extends Command
 
     }
 
-    public function getData($cnpj)
+    public function getData($cnpj, $key)
     {
+        echo 'CNPJ: '.$cnpj.PHP_EOL;
         try {
             $data = json_decode(file_get_contents('https://www.receitaws.com.br/v1/cnpj/' . $cnpj), true);
         } catch (Exception $exception) {
+            Cache::increment($key);
             dd($exception->getMessage());
             return false;
         }
