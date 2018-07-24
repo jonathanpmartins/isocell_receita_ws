@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Record;
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class ImportReceitaWs extends Command
@@ -19,25 +20,50 @@ class ImportReceitaWs extends Command
 
     public function handle()
     {
+        $key = 'receita-ws:last-id';
+
         $counter = 0;
         $error = 0;
+
         while ($counter < 3) {
 
-            //$client = DB::connection('isocell')->table('clients')->inRandomOrder()->first();
-            $cnpjs = Record::pluck('cnpj');
-            $client = DB::connection('isocell')->table('clients')->whereNotIn('cnpj', $cnpjs)->inRandomOrder()->first();
+            if (Cache::has($key)) {
+                $lastId = Cache::get($key);
+            } else {
+                $lastId = 0;
+                Cache::forever($key, $lastId);
+            }
 
-            $record = Record::where('cnpj', $client->cnpj)->first();
+            $entity = DB::connection('isocell')->table('clients')->where('id', '>', $lastId)->first();
+            if (!$entity) {
+                echo 'BREAK 1 (ENTITY DONT EXIST)'.PHP_EOL;
+                break;
+            }
+
+            if (!isset($entity->cnpj)) {
+                echo 'BREAK 2 (ISSET)'.PHP_EOL;
+                break;
+            }
+
+            $record = Record::where('cnpj', $entity->cnpj)->first();
             if ($record) {
+                echo 'COTINUE 1 (HAS REACORD)'.PHP_EOL;
+                Cache::increment($key);
                 continue;
             }
 
-            $data = $this->getData($client->cnpj);
+            if ($counter > 0) {
+                sleep(10);
+            }
+
+            $data = $this->getData($entity->cnpj);
             if (!$data) {
                 if ($error > 10) {
+                    echo 'BREAK 3 (ERRORS TIMEOUT)'.PHP_EOL;
                     break;
                 }
                 $error++;
+                echo 'COTINUE 2 (EXCEPTION)'.PHP_EOL;
                 continue;
             }
 
@@ -47,7 +73,7 @@ class ImportReceitaWs extends Command
 
             $counter++;
 
-            sleep(10);
+            Cache::increment($key);
         }
 
     }
