@@ -42,7 +42,7 @@ class ImportReceitaWs extends Command
 
             echo '0'.PHP_EOL;
 
-            $entity = DB::connection('isocell')->table('clients')->where('id', '>', $lastId)->first();
+            $entity = DB::connection('isocell')->table('suppliers')->where('id', '>', $lastId)->first();
             if (!$entity) {
                 echo 'BREAK 1 (ENTITY DONT EXIST)'.PHP_EOL;
                 break;
