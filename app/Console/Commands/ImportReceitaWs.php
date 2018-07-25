@@ -42,7 +42,7 @@ class ImportReceitaWs extends Command
 
             echo '0'.PHP_EOL;
 
-            $entity = DB::connection('isocell')->table('suppliers')->where('id', '>', $lastId)->first();
+            $entity = DB::connection('isocell')->table('clients')->where('id', '>', $lastId)->first();
             if (!$entity) {
                 echo 'BREAK 1 (ENTITY DONT EXIST)'.PHP_EOL;
                 break;
@@ -51,7 +51,7 @@ class ImportReceitaWs extends Command
             echo '1'.PHP_EOL;
 
             if (!isset($entity->cnpj)) {
-                echo 'BREAK 2 (ISSET || not set)'.PHP_EOL;
+                echo 'BREAK 2 (ISSET)'.PHP_EOL;
                 Cache::increment($key);
                 break;
             }
